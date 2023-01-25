@@ -21,6 +21,14 @@ internal class Menu
         Console.WriteLine("4. Ta bort en specifik kontakt");
         Console.Write("Välj ett av alternativen ovan: ");
 
+        try
+        {
+            var items = JsonConvert.DeserializeObject<List<Contact>>(file.Read(FilePath));
+            if (items != null)
+                contacts = items;
+        }
+        catch { }
+
         var menu = Console.ReadLine();
 
         switch (menu)
@@ -82,14 +90,6 @@ internal class Menu
     {
         Console.Clear();
 
-            try
-            {
-                var items = JsonConvert.DeserializeObject<List<Contact>>(file.Read(FilePath));
-                if (items != null)
-                    contacts = items;
-            }
-            catch { }
-
         Console.WriteLine("Personer i adressboken");
         
         foreach (var contact in contacts)
@@ -105,33 +105,29 @@ internal class Menu
     private void MenuThree()
     {
         Console.Clear();
-
-        try
-        {
-            var items = JsonConvert.DeserializeObject<List<Contact>>(file.Read(FilePath));
-            if (items != null) 
-                contacts = items;
-        }
-        catch { }
-
         Console.Write("Skriv för och efternamn till kontakten du vill få upp: ");
+        var input = Console.ReadLine();
+        var contact = FindContact(input!);
 
-        
+        if (contact == null) 
+        {
+            Console.WriteLine($"Kontakten {input} finns inte");
+        } 
+        else
+        {
+            Console.Clear();
+            Console.WriteLine($"Namn: {contact.FirstName} {contact.LastName}");
+            Console.WriteLine($"Email: {contact.Email}");
+            Console.WriteLine($"Telefonnummer: {contact.PhoneNumber}");
+            Console.WriteLine($"Adress: {contact.Address} {contact.County}");
+        }
 
-        foreach (var contact in contacts)
-            if (contact.DisplayName == Console.ReadLine())
-            {
-                Console.WriteLine($"Namn: {contact.FirstName} {contact.LastName}");
-                Console.WriteLine($"Email: {contact.Email}");
-                Console.WriteLine($"Telefonnummer: {contact.PhoneNumber}");
-                Console.WriteLine($"Adress: {contact.Address} {contact.County}, phonenumber: {contact.PhoneNumber}");
-            }
+
+
 
         Console.WriteLine("\nTryck på valfri tangent för att fortsätta");
 
-
-
-
+        Console.ReadKey();
     }
 
     private void MenuFour()
@@ -139,6 +135,13 @@ internal class Menu
         Console.Clear();
     }
 
-
+    private Contact FindContact(string search)
+    {
+        foreach (var contact in contacts)
+            if (contact.DisplayName == search)
+            {
+                return contact;
+            }
+        return null!;
+    }
 }
-
