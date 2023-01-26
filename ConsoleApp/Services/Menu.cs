@@ -1,6 +1,10 @@
 ﻿using ConsoleApp.Interfaces;
 using ConsoleApp.Models;
+using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.ComponentModel;
+using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 
 namespace ConsoleApp.Services;
@@ -91,7 +95,7 @@ internal class Menu
         Console.Clear();
 
         Console.WriteLine("Personer i adressboken");
-        
+
         foreach (var contact in contacts)
         {
             Console.WriteLine($"Namn: {contact.FirstName} {contact.LastName} - E-mail: {contact.Email}");
@@ -109,10 +113,10 @@ internal class Menu
         var input = Console.ReadLine();
         var contact = FindContact(input!);
 
-        if (contact == null) 
+        if (contact == null)
         {
             Console.WriteLine($"Kontakten {input} finns inte");
-        } 
+        }
         else
         {
             Console.Clear();
@@ -133,6 +137,40 @@ internal class Menu
     private void MenuFour()
     {
         Console.Clear();
+
+        Console.WriteLine("Skriv för och efternamn till kontakten du vill radera");
+        var input = Console.ReadLine();
+        var contact = FindContact(input!);
+
+        if (contact == null)
+        {
+            Console.WriteLine($"Kontakten {input} finns inte, tryck på valfri tangent för att fortsätta");
+            Console.ReadKey();
+        }
+        else
+        {
+            Console.Clear();
+            Console.WriteLine($"Vill du radera {input}? y/n");
+            var yn = Console.ReadLine();
+            var test = contact;
+
+            if (yn == "y")
+            {
+                Console.Clear();
+                contacts.Remove(contact);
+                Console.WriteLine($"Du tog bort kontakten {input} tryck på valfri tangent för att fortsätta");
+                file.Save(FilePath, JsonConvert.SerializeObject(contacts));
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Ingen kontakt togs bort tryck på valfri tangent för att fortsätta");
+                Console.ReadKey();
+            }
+
+        }
+
     }
 
     private Contact FindContact(string search)
