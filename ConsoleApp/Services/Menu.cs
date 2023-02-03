@@ -9,9 +9,9 @@ using System.Runtime.CompilerServices;
 
 namespace ConsoleApp.Services;
 
-internal class Menu
+public class Menu
 {
-    private List<Contact> contacts = new List<Contact>();
+    public List<Contact> contacts = new List<Contact>();
     private FileService file = new FileService();
 
     public string FilePath { get; set; } = null!;

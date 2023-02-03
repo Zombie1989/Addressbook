@@ -2,7 +2,7 @@
 
 namespace ConsoleApp.Models;
 
-internal class Contact : IContact
+public class Contact : IContact
 {
     public Guid ContactId { get; set; } = Guid.NewGuid();
     public string FirstName { get; set; } = null!;
